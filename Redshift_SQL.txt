@@ -1,0 +1,55 @@
+-- SCHEMA
+CREATE SCHEMA ecommerce_data;
+
+=====================================================================================================
+
+-- DIM CUSTOMER
+CREATE TABLE ecommerce_data.dim_customers ( 
+    customer_id VARCHAR(20) ENCODE lzo, 
+    first_name VARCHAR(255) ENCODE lzo, 
+    last_name VARCHAR(255) ENCODE lzo, 
+    email VARCHAR(100) ENCODE lzo, 
+    membership_level VARCHAR(2) ENCODE lzo
+)
+DISTSTYLE KEY
+DISTKEY (membership_level)
+SORTKEY (customer_id, first_name, last_name);
+
+-- Customer Data Insert
+INSERT INTO ecommerce_data.dim_customers (customer_id, first_name, last_name, email, membership_level) 
+VALUES 
+('CUST00001', 'Yash', 'Bhawsar', 'yash.bha@example.com', 'BR'),
+('CUST00002', 'Vini', 'Shrivastava', 'vini.stva@example.com', 'SL'), 
+('CUST00003', 'Ram', 'Heerekar', 'ram.heer@example.com', 'GL'),
+('CUST00004', 'Matin', 'Khan', 'matin.khan@example.com', 'BR'),
+('CUST00005', 'Bikki', 'Tamoli', 'Bikki.tamoli@example.com', 'SL'); 
+
+=====================================================================================================
+
+-- DIM PRODUCTS
+CREATE TABLE ecommerce_data.dim_products ( 
+    product_id VARCHAR(20) ENCODE lzo, 
+    product_name VARCHAR(255) ENCODE lzo, 
+    category VARCHAR(100) ENCODE lzo, 
+    price DECIMAL(10,2) ENCODE delta, 
+    supplier_id VARCHAR(20) ENCODE lzo
+)
+DISTSTYLE KEY
+DISTKEY (category)
+SORTKEY (product_id, product_name);
+
+-- Product Data Insert
+INSERT INTO ecommerce_data.dim_products (product_id, product_name, category, price, supplier_id) 
+VALUES 
+('PROD00001', 'Laptop', 'Electronics', 799.99, 'SUP00001'),
+('PROD00002', 'Smartphone', 'Electronics', 499.99, 'SUP00002'),
+('PROD00003', 'Headphones', 'Electronics', 79.99, 'SUP00001'),
+('PROD00004', 'T-Shirt', 'Clothing', 19.99, 'SUP00003'),
+('PROD00005',  'Jeans', 'Clothing', 49.99, 'SUP00003'),
+('PROD00006', 'Coffee Maker', 'Home Goods', 99.99, 'SUP00002'),
+('PROD00007', 'Microwave', 'Home Goods', 149.99, 'SUP00001'),
+('PROD00008', 'Vacuum Cleaner', 'Home Goods' ,199.99, 'SUP00002'),
+('PROD00009', 'Book', 'Other', 14.99, 'SUP00003'),
+('PROD00010', 'Movie', 'Other', 19.99, 'SUP00002');
+
+=====================================================================================================
