@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from upload_to_s3 import upload_to_s3
 
 # Define date range (modify as needed)
-start_date = date(2024, 3, 23)  # Adjust start date
+start_date = date(2024, 7, 1)  # Adjust start date
 end_date = date.today()
 
 
@@ -20,4 +20,3 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps(f'Ecommerce Data Generated.')
     }
-

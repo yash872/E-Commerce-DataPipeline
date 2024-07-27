@@ -11,7 +11,7 @@ product_ids = ["PROD00001", "PROD00002", "PROD00003", "PROD00004", "PROD00005", 
 payment_types = ["Credit Card", "Debit Card", "Cash on Delivery"]
 
 # Define number of transactions per day
-transactions_per_day = 10
+transactions_per_day = 15
 
 # Define product prices (replace with actual values from your product table)
 product_prices = {
