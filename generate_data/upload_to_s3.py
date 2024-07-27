@@ -1,7 +1,7 @@
 import boto3
 
 s3 = boto3.client("s3")
-bucket_name = "ecommerce-transaction-data"
+bucket_name = "ecommerce-data-yb"
 
 def upload_to_s3(filename, current_date):
     """Uploads a CSV file to S3 with Hive-style partitioning"""
