@@ -12,7 +12,8 @@ We will design a system using AWS services such as S3, Lambda, Glue, Redshift, a
 ***
 
 ## Key Steps
-### 1. Dimension Tables and Sample Records
+### 1. Dimension Tables with Sample Records and Fact Table 
+- Pre-load these dimension tables into Redshift as part of the setup process.
 - Products Dimension Table (dim_products):
     - Columns: product_id, product_name, category, price, supplier_id
       ![Dim_Customer](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/Dim_Product.JPG)
@@ -20,5 +21,60 @@ We will design a system using AWS services such as S3, Lambda, Glue, Redshift, a
 - Customers Dimension Table (dim_customers):
     - Columns: customer_id, first_name, last_name, email, membership_level
       ![Dim_Customer](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/Dim_Customer.JPG)
-      
-- Pre-load these dimension tables into Redshift as part of the setup process.
+
+- Transactions Fact Table (fact_transactions):
+    - Columns: transaction_id, customer_id, customer_email, product_id, product_name, total_price, transaction_date, payment_type, status   
+
+
+***
+
+### 2. Mock Data Generation
+- Generate Mock Data for the customers based on products. Use Code build for lambda. This lambda function will generate data and upload csv files into S3 in Hive
+Partitioning manner.
+  - CODE BUILD:
+  ![Codebuild](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/codebuild.JPG)
+  
+  - Mock CSV files generated from the Lambda, the code in lambda is updated from github repo by the CICD setup with AWS CodeBuild.
+  stored using the following hive-style partitioning in S3: 
+  s3://your-bucket/transactions/year=2023/month=03/day=15/transactions_2023-03-15.csv.
+
+   ![RawCSVFiles](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/RawCSVFiles.JPG)
+  
+  ***
+
+### 3. Create AWS Glue Crawlers
+- Create a Glue crawler for the S3 bucket input file directory (data stored in HIVE style with multiple partitioning)
+- Create a Glue crawler for the fact_transaction Redshift table.
+  NOTE: we have to create the Redshift connector and 2 important points to remember
+  - Security Group associated to Redshift should expose to the Redshift PORT 5439.
+  - VPC associated to Redshift should have a S3 Endpoint defined.
+
+![crawlers](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/crawlers.JPG)
+
+  ***
+
+### 4. Create Glue ETL Flow
+- ![GlueETL](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/GlueETLJob.JPG)
+
+
+### 5. Create lambda to start glue job when data is generated in S3:
+- ![s3lambdaGlueJob](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/s3lambdaGlueJob.JPG)
+
+### 6. Create SNS Topic:
+- Create SNS Topic to send email when Glue ETL job is done, and it can be used in final 
+lambda to archive the data
+  - ![s3lambdaGlueJob](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/GlueJobNotification.JPG)
+
+### 7. Create EventBridge Rule:
+- Create EventBridge Rule to trigger SNS when Glue Job Changes Status
+  - ![EventRuleforSNS](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/EventRuleforSNS.JPG)
+
+### 8. Create lambda to archive data after SNS notification:
+- ![s3lambdaGlueJob](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/s3lambdaGlueJob.JPG)
+
+### 9. Create S3 Bucket to Archive the data:
+- ![dataArchive](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/dataArchive.JPG)
+
+### 10. Final Fact_Transaction table in Redshift:
+- The data ingestion process is following the UPSERT method.
+  - ![fact_ouput](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/fact_ouput.JPG)
