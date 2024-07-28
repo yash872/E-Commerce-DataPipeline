@@ -34,7 +34,7 @@ Partitioning manner.
   - CODE BUILD:
   ![Codebuild](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/codebuild.JPG)
   
-  - Mock CSV files generated from the Lambda, the code in lambda is updated from github repo by the CICD setup with AWS CodeBuild.
+  - Mock CSV files generated from the Lambda, the code in lambda is updated from GitHub repo by the CICD setup with AWS CodeBuild.
   stored using the following hive-style partitioning in S3: 
   s3://your-bucket/transactions/year=2023/month=03/day=15/transactions_2023-03-15.csv.
 
@@ -46,8 +46,8 @@ Partitioning manner.
 - Create a Glue crawler for the S3 bucket input file directory (data stored in HIVE style with multiple partitioning)
 - Create a Glue crawler for the fact_transaction Redshift table.
   NOTE: we have to create the Redshift connector and 2 important points to remember
-  - Security Group associated to Redshift should expose to the Redshift PORT 5439.
-  - VPC associated to Redshift should have a S3 Endpoint defined.
+  - Security Group associated with Redshift should be exposed to the Redshift PORT 5439.
+  - VPC associated with Redshift should have a S3 Endpoint defined.
 
 ![crawlers](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/crawlers.JPG)
 
@@ -57,11 +57,11 @@ Partitioning manner.
 - ![GlueETL](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/GlueETLJob.JPG)
 
 
-### 5. Create lambda to start glue job when data is generated in S3:
+### 5. Create lambda to start the glue job when data is generated in S3:
 - ![s3lambdaGlueJob](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/s3lambdaGlueJob.JPG)
 
 ### 6. Create SNS Topic:
-- Create SNS Topic to send email when Glue ETL job is done, and it can be used in final 
+- Create an SNS Topic to send emails when Glue ETL job is done, and it can be used in the final 
 lambda to archive the data
   - ![s3lambdaGlueJob](https://github.com/yash872/E-Commerce-DataPipeline/blob/main/Images/GlueJobNotification.JPG)
 
